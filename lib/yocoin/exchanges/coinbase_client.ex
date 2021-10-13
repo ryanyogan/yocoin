@@ -57,6 +57,7 @@ defmodule Yocoin.Exchanges.CoinbaseClient do
     {:noreply, state}
   end
 
+  # TODO: Wipe your butt
   def handle_ws_message(msg, state) do
     IO.inspect(msg, label: "unhandled message")
     {:noreply, state}
