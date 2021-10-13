@@ -1,0 +1,1 @@
+alias Yocoin.Exchanges.CoinbaseClient
