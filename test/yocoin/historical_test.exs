@@ -1,4 +1,6 @@
 defmodule HistoricalTest do
+  @moduledoc false
+
   use ExUnit.Case, async: true
   alias Yocoin.{Historical, Exchanges, Ticker, Trade}
 

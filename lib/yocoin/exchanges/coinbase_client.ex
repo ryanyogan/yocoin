@@ -1,7 +1,10 @@
 defmodule Yocoin.Exchanges.CoinbaseClient do
+  @moduledoc false
+
   alias Yocoin.{Exchanges, Ticker, Trade}
   alias Yocoin.Exchanges.Client
   require Client
+  require Logger
 
   Client.defclient(
     exchange_name: "coinbase",
@@ -9,19 +12,6 @@ defmodule Yocoin.Exchanges.CoinbaseClient do
     port: 443,
     currency_pairs: ["BTC-USD", "ETH-USD", "LTC-USD", "BTC-EUR", "ETH-EUR", "LTC-EUR"]
   )
-
-  @impl true
-  def handle_ws_message(%{"type" => "ticker"} = msg, state) do
-    {:ok, trade} = message_to_trade(msg)
-    Exchanges.broadcast(trade)
-
-    {:noreply, state}
-  end
-
-  def handle_ws_message(msg, state) do
-    IO.inspect(msg, label: "unhandled message")
-    {:noreply, state}
-  end
 
   @impl true
   def subscription_frames(currency_pairs) do
@@ -34,6 +24,20 @@ defmodule Yocoin.Exchanges.CoinbaseClient do
       |> Jason.encode!()
 
     [{:text, msg}]
+  end
+
+  @impl true
+  def handle_ws_message(%{"type" => "ticker"} = msg, state) do
+    {:ok, trade} = message_to_trade(msg)
+    Exchanges.broadcast(trade)
+
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_ws_message(msg, state) do
+    Logger.debug(msg, label: "Unhandled Message")
+    {:noreply, state}
   end
 
   @spec message_to_trade(map()) :: {:ok, Trade.t()} | {:error, any()}

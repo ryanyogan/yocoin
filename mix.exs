@@ -40,7 +40,8 @@ defmodule Yocoin.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:gun, "~> 1.3"},
-      {:cowlib, "~> 2.9.1", override: true}
+      {:cowlib, "~> 2.9.1", override: true},
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end
 

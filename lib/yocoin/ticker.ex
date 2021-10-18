@@ -1,4 +1,6 @@
 defmodule Yocoin.Ticker do
+  @moduledoc false
+
   @type t() :: %__MODULE__{
           exchange_name: String.t(),
           currency_pair: String.t()

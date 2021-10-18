@@ -1,4 +1,6 @@
 defmodule Yocoin.Historical do
+  @moduledoc false
+
   use GenServer
   alias Yocoin.{Ticker, Trade, Exchanges}
 

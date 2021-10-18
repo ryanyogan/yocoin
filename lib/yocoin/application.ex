@@ -15,7 +15,7 @@ defmodule Yocoin.Application do
     :ok
   end
 
-  defp children() do
+  defp children do
     [
       YocoinWeb.Telemetry,
       {Phoenix.PubSub, name: Yocoin.PubSub},

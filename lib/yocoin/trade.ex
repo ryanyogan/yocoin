@@ -1,4 +1,6 @@
 defmodule Yocoin.Trade do
+  @moduledoc false
+
   alias Yocoin.Ticker
 
   @type t() :: %__MODULE__{

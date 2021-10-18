@@ -1,7 +1,10 @@
 defmodule Yocoin.Exchanges.BitstampClient do
-  alias Yocoin.{Exchanges, Trade, Ticker}
+  @moduledoc false
+
   alias Yocoin.Exchanges.Client
+  alias Yocoin.{Exchanges, Trade, Ticker}
   require Client
+  require Logger
 
   Client.defclient(
     exchange_name: "bitstamp",
@@ -9,20 +12,6 @@ defmodule Yocoin.Exchanges.BitstampClient do
     port: 443,
     currency_pairs: ["btcusd", "ethusd", "ltcusd", "btceur", "etheur", "ltceur"]
   )
-
-  @impl true
-  def handle_ws_message(%{"event" => "trade"} = msg, state) do
-    {:ok, trade} = message_to_trade(msg)
-    Exchanges.broadcast(trade)
-
-    {:noreply, state}
-  end
-
-  def handle_ws_message(msg, state) do
-    IO.inspect(msg, label: "unhandled message")
-
-    {:noreply, state}
-  end
 
   @impl true
   def subscription_frames(currency_pairs) do
@@ -40,6 +29,20 @@ defmodule Yocoin.Exchanges.BitstampClient do
       |> Jason.encode!()
 
     {:text, msg}
+  end
+
+  @impl true
+  def handle_ws_message(%{"event" => "trade"} = msg, state) do
+    {:ok, trade} = message_to_trade(msg)
+    Exchanges.broadcast(trade)
+
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_ws_message(msg, state) do
+    Logger.debug(msg, label: "Unhandled Message")
+    {:noreply, state}
   end
 
   @spec message_to_trade(map()) :: {:ok, Trade.t()} | {:error, any()}

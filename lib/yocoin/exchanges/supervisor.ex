@@ -1,4 +1,6 @@
 defmodule Yocoin.Exchanges.Supervisor do
+  @moduledoc false
+
   use Supervisor
   alias Yocoin.Exchanges
 

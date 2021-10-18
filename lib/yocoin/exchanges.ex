@@ -1,4 +1,6 @@
 defmodule Yocoin.Exchanges do
+  @moduledoc false
+
   alias Yocoin.{Ticker, Trade}
 
   @clients [
@@ -11,7 +13,7 @@ defmodule Yocoin.Exchanges do
                       end)
 
   @spec available_tickers() :: [Ticker.t()]
-  def available_tickers(), do: @available_tickers
+  def available_tickers, do: @available_tickers
 
   @spec clients() :: [module()]
   def clients, do: @clients
