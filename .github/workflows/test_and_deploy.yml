@@ -20,6 +20,20 @@ jobs:
           otp-version: ${{ matrix.otp }}
           elixir-version: ${{ matrix.elixir }}
 
+      - name: Cache Elixir Dependencies
+        uses: actions/cache@v1
+        id: deps-cache
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}-{1}', github.workspace, '/mix.lock')) }}
+
+      - name: Cache Elixir _build
+        uses: actions/cache@v1
+        id: build-cache
+        with:
+          path: _build
+          key: ${{ runner.os }}-build-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+
       - name: Install Elixir Deps
         run: |
           mix deps.get
