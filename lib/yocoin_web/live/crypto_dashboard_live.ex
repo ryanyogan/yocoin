@@ -2,39 +2,61 @@ defmodule YocoinWeb.CryptoDashboardLive do
   @moduledoc false
 
   use YocoinWeb, :live_view
-  alias Yocoin.Ticker
 
   @impl true
   def mount(_params, _session, socket) do
-    ticker = Ticker.new("coinbase", "BTC-USD")
-    trade = Yocoin.get_last_trade(ticker)
+    tickers = Yocoin.available_tickers()
+
+    trades =
+      tickers
+      |> Yocoin.get_last_trades()
+      |> Enum.reject(&is_nil/1)
+      |> Enum.map(&{&1.ticker, &1})
+      |> Enum.into(%{})
 
     if connected?(socket) do
-      Yocoin.subscribe_to_trades(ticker)
+      Enum.each(tickers, &Yocoin.subscribe_to_trades/1)
     end
 
-    socket = assign(socket, :trade, trade)
-    {:ok, socket}
+    {:ok,
+     socket
+     |> assign(trades: trades)
+     |> assign(tickers: tickers)}
   end
 
   @impl true
   def render(assigns) do
     ~H"""
-      <h2>
-        <%= @trade.ticker.exchange_name %>
-        <%= @trade.ticker.currency_pair %>
-      </h2>
-      <p>
-        <%= @trade.traded_at %> -
-        <%= @trade.price %> -
-        <%= @trade.volume %>
-      </p>
+    <table>
+      <thead>
+        <th>Traded at</th>
+        <th>Exchange</th>
+        <th>Currency</th>
+        <th>Price</th>
+        <th>Volume</th>
+      </thead>
+      <tbody>
+      <%= for ticker <- @tickers, trade = @trades[ticker], not is_nil(trade) do %>
+        <tr>
+          <td><%= trade.traded_at %></td>
+          <td><%= trade.ticker.exchange_name %></td>
+          <td><%= trade.ticker.currency_pair %></td>
+          <td><%= trade.price %></td>
+          <td><%= trade.volume %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
     """
   end
 
   @impl true
   def handle_info({:new_trade, trade}, socket) do
-    socket = assign(socket, :trade, trade)
+    socket =
+      update(socket, :trades, fn trades ->
+        Map.put(trades, trade.ticker, trade)
+      end)
+
     {:noreply, socket}
   end
 end
