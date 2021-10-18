@@ -25,7 +25,9 @@ jobs:
       - run: mix test
 
   deploy:
+    needs: test
     name: Yocoin Deployment
+    if: github.ref == 'refs/heads/trunk'
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
