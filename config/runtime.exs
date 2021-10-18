@@ -14,7 +14,7 @@ if config_env() == :prod do
 
   config :yocoin, YocoinWeb.Endpoint,
     server: true,
-    url: [host: "#{app_name}.fly.dev", port: 80],
+    url: [host: "yocoin.fly.dev", port: 80],
     http: [
       port: String.to_integer(System.get_env("PORT") || "4000"),
       transport_options: [socket_opts: [:inet6]]
