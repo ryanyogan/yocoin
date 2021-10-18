@@ -20,7 +20,7 @@ defmodule Yocoin.Historical do
   end
 
   @spec get_last_trades(pid() | atom(), [Ticker.t()]) :: [Trade.t() | nil]
-  def get_last_trades(pid, tickers) do
+  def get_last_trades(pid \\ __MODULE__, tickers) do
     GenServer.call(pid, {:get_last_trades, tickers})
   end
 
