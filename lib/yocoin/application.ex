@@ -21,7 +21,10 @@ defmodule Yocoin.Application do
       {Phoenix.PubSub, name: Yocoin.PubSub},
       {Yocoin.Historical, name: Yocoin.Historical},
       {Yocoin.Exchanges.Supervisor, name: Yocoin.Exchanges.Supervisor},
+      {Cluster.Supervisor, [topologies(), [name: Yocoin.ClusterSupervisor]]},
       YocoinWeb.Endpoint
     ]
   end
+
+  defp topologies, do: Application.get_env(:libcluster, :topologies) || []
 end

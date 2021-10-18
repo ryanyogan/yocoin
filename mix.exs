@@ -11,7 +11,8 @@ defmodule Yocoin.MixProject do
       compilers: [:gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      consolidate_protocols: Mix.env() != :test
     ]
   end
 
@@ -42,7 +43,8 @@ defmodule Yocoin.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:gun, "~> 1.3"},
       {:cowlib, "~> 2.9.1", override: true},
-      {:credo, "~> 1.4", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:libcluster, "~> 3.3.0"}
     ]
   end
 
