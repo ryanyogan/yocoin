@@ -1,6 +1,9 @@
 name: Test and Deploy
 on: push
 
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
 jobs:
   test:
     runs-on: ubuntu-18.04
@@ -20,3 +23,12 @@ jobs:
         run: |
           mix deps.get
       - run: mix test
+
+  deploy:
+    name: Yocoin Deployment
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: superfly/flyctl-actions@1.1
+        with:
+          args: "deploy"
