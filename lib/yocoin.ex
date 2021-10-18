@@ -6,4 +6,6 @@ defmodule Yocoin do
   Contexts are also responsible for managing your data, regardless
   if it comes from the database, an external API or others.
   """
+  defdelegate subscribe_to_trades(ticker), to: Yocoin.Exchanges, as: :subscribe
+  defdelegate unsubscribe_to_trades(ticker), to: Yocoin.Exchanges, as: :unsubscribe
 end

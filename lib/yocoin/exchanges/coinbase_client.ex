@@ -12,9 +12,10 @@ defmodule Yocoin.Exchanges.CoinbaseClient do
 
   @impl true
   def handle_ws_message(%{"type" => "ticker"} = msg, state) do
-    msg
-    |> message_to_trade()
-    |> IO.inspect(label: "ticker")
+    {:ok, trade} = message_to_trade(msg)
+    topic = to_string(trade.ticker)
+
+    Phoenix.PubSub.broadcast(Yocoin.PubSub, topic, {:new_trade, trade})
 
     {:noreply, state}
   end
@@ -43,12 +44,13 @@ defmodule Yocoin.Exchanges.CoinbaseClient do
          {:ok, traded_at, _} <- DateTime.from_iso8601(msg["time"]) do
       currency_pair = msg["product_id"]
 
-      Trade.new(
-        ticker: Ticker.new(exchange_name(), currency_pair),
-        price: msg["price"],
-        volume: msg["last_size"],
-        traded_at: traded_at
-      )
+      {:ok,
+       Trade.new(
+         ticker: Ticker.new(exchange_name(), currency_pair),
+         price: msg["price"],
+         volume: msg["last_size"],
+         traded_at: traded_at
+       )}
     else
       {:error, _reason} = error ->
         error

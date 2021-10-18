@@ -47,12 +47,13 @@ defmodule Yocoin.Exchanges.BitstampClient do
       when is_map(data) do
     with :ok <- validate_required(data, ["amount_str", "price_str", "timestamp"]),
          {:ok, traded_at} <- timestamp_to_datetime(data["timestamp"]) do
-      Trade.new(
-        ticker: Ticker.new(exchange_name(), currency_pair),
-        price: data["price_str"],
-        volume: data["amount_str"],
-        traded_at: traded_at
-      )
+      {:ok,
+       Trade.new(
+         ticker: Ticker.new(exchange_name(), currency_pair),
+         price: data["price_str"],
+         volume: data["amount_str"],
+         traded_at: traded_at
+       )}
     else
       {:error, _reason} = error ->
         error

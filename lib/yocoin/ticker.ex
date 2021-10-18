@@ -13,4 +13,10 @@ defmodule Yocoin.Ticker do
       currency_pair: currency_pair
     }
   end
+
+  defimpl String.Chars do
+    def to_string(ticker) do
+      ticker.exchange_name <> ":" <> ticker.currency_pair
+    end
+  end
 end
