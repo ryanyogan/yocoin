@@ -13,6 +13,9 @@ defmodule Yocoin.Exchanges do
   @spec available_tickers() :: [Ticker.t()]
   def available_tickers(), do: @available_tickers
 
+  @spec clients() :: [module()]
+  def clients, do: @clients
+
   @spec subscribe(Ticker.t()) :: :ok | {:error, term()}
   def subscribe(ticker) do
     Phoenix.PubSub.subscribe(Yocoin.PubSub, topic(ticker))

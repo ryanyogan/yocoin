@@ -1,5 +1,5 @@
 defmodule Yocoin.Exchanges.BitstampClient do
-  alias Yocoin.{Trade, Ticker}
+  alias Yocoin.{Exchanges, Trade, Ticker}
   alias Yocoin.Exchanges.Client
   require Client
 
@@ -12,8 +12,8 @@ defmodule Yocoin.Exchanges.BitstampClient do
 
   @impl true
   def handle_ws_message(%{"event" => "trade"} = msg, state) do
-    msg
-    |> message_to_trade()
+    {:ok, trade} = message_to_trade(msg)
+    Exchanges.broadcast(trade)
 
     {:noreply, state}
   end

@@ -10,7 +10,7 @@ defmodule Yocoin.Historical do
   defstruct [:tickers, :trades]
 
   def start_link(opts) do
-    {tickers, opts} = Keyword.pop(opts, :tickers, [])
+    {tickers, opts} = Keyword.pop(opts, :tickers, Exchanges.available_tickers())
     GenServer.start_link(__MODULE__, tickers, opts)
   end
 

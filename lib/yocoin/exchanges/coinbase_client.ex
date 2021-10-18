@@ -1,5 +1,5 @@
 defmodule Yocoin.Exchanges.CoinbaseClient do
-  alias Yocoin.{Ticker, Trade}
+  alias Yocoin.{Exchanges, Ticker, Trade}
   alias Yocoin.Exchanges.Client
   require Client
 
@@ -13,9 +13,7 @@ defmodule Yocoin.Exchanges.CoinbaseClient do
   @impl true
   def handle_ws_message(%{"type" => "ticker"} = msg, state) do
     {:ok, trade} = message_to_trade(msg)
-    topic = to_string(trade.ticker)
-
-    Phoenix.PubSub.broadcast(Yocoin.PubSub, topic, {:new_trade, trade})
+    Exchanges.broadcast(trade)
 
     {:noreply, state}
   end
