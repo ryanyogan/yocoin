@@ -6,6 +6,7 @@ env:
 
 jobs:
   test:
+    name: Yocoin Testing
     runs-on: ubuntu-18.04
     strategy:
       matrix:
