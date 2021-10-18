@@ -1,6 +1,18 @@
 defmodule Yocoin.Exchanges do
   alias Yocoin.{Ticker, Trade}
 
+  @clients [
+    Yocoin.Exchanges.CoinbaseClient,
+    Yocoin.Exchanges.BitstampClient
+  ]
+
+  @available_tickers (for client <- @clients, pair <- client.available_currency_pairs() do
+                        Ticker.new(client.exchange_name(), pair)
+                      end)
+
+  @spec available_tickers() :: [Ticker.t()]
+  def available_tickers(), do: @available_tickers
+
   @spec subscribe(Ticker.t()) :: :ok | {:error, term()}
   def subscribe(ticker) do
     Phoenix.PubSub.subscribe(Yocoin.PubSub, topic(ticker))
